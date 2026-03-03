@@ -1,4 +1,9 @@
-import { IEnvConfig, IPostgresSQLConfig, IRedisConfig } from './ienv.config';
+import {
+  IAuthConfig,
+  IEnvConfig,
+  IPostgresSQLConfig,
+  IRedisConfig,
+} from './ienv.config';
 
 const parsePort = (value: string | undefined, fallback: number): number => {
   const parsed = Number(value);
@@ -21,9 +26,15 @@ export const Config = (): IEnvConfig => {
     port: parsePort(process.env.REDIS_PORT, 6379),
   };
 
+  const auth: IAuthConfig = {
+    jwtSecret: process.env.AUTH_JWT_SECRET ?? '',
+    expiresAt: process.env.AUTH_EXPIRES_AT ?? '1d',
+  };
+
   const config: IEnvConfig = {
     postgresql: postgresql,
     redis: redis,
+    auth: auth,
   };
   return config;
 };

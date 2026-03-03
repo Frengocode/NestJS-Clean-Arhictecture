@@ -6,6 +6,7 @@ import {
   ParseIntPipe,
   Post,
   Query,
+  Req,
 } from '@nestjs/common';
 import { CreateUserDTO } from './dto/request/create-user';
 import {
@@ -30,6 +31,10 @@ import {
 } from './interfaces/use-cases/iget.auth.user.use-case';
 import { AuthUserRequestDTO } from './dto/request/auth-user';
 import { AuthUserDTO } from './dto/responses/auth-user';
+import { CurrentUserGuard, type AuthenticatedRequest } from './guards/current-user-id.guard';
+import { UseGuards } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
+
 
 @Controller('users/api/v1')
 export class UserController {
@@ -79,6 +84,15 @@ export class UserController {
     @Query() request: AuthUserRequestDTO,
   ): Promise<AuthUserDTO | never> {
     return this.getAuthUserUseCase.execute(request);
+  }
+
+
+  @Get("/get/me")
+  @ApiResponse({type: UserDTO})
+  @ApiBearerAuth("bearer")
+  @UseGuards(CurrentUserGuard)
+  async getUserMe(@Req() req: AuthenticatedRequest): Promise<UserDTO | never>{
+    return await this.getUserUseCase.execute(req.currentUser.id)
   }
 }
 

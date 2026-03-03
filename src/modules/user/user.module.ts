@@ -50,6 +50,7 @@ import { UserPasswordVerifier } from './infrastructure/verifiers/user.password.v
       useClass: GetAuthUserUseCse,
     },
   ],
+  exports: [GET_AUTH_USER_USE_CASE, GET_USER_USE_CASE],
   controllers: [UserController],
 })
 export class UserModule {}

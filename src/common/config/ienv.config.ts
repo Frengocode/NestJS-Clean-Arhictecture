@@ -1,6 +1,7 @@
 export interface IEnvConfig {
   postgresql: IPostgresSQLConfig;
   redis: IRedisConfig;
+  auth: IAuthConfig
 }
 
 export interface HostPort {
@@ -15,3 +16,9 @@ export interface IPostgresSQLConfig extends HostPort {
 }
 
 export interface IRedisConfig extends HostPort {}
+
+
+export interface IAuthConfig{
+  jwtSecret: string,
+  expiresAt: string
+}
