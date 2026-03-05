@@ -12,6 +12,7 @@ import {
 import { Inject, Injectable } from '@nestjs/common';
 import { UserDTO } from '../dto/responses/user.dto';
 import { UserEntitie } from '../entities/user.entitie';
+import { UserEventsPublisher } from '../events/user.events';
 
 @Injectable()
 export class CreateUserUseCase implements ICreateUserUseCase {
@@ -24,6 +25,8 @@ export class CreateUserUseCase implements ICreateUserUseCase {
 
     @Inject(EXIST_USER_VERIFIER)
     public existUserVerifier: IExistUserVerifier,
+
+    public userEventsPublisher: UserEventsPublisher,
   ) {}
 
   async execute(dto: CreateUserDTO): Promise<UserDTO | never> {
@@ -37,6 +40,8 @@ export class CreateUserUseCase implements ICreateUserUseCase {
     console.log(user);
 
     const mapper: UserDTO = new UserDTO();
-    return mapper.entitieMapper(user);
+    const response: UserDTO = UserDTO.entitieMapper(user);
+    await this.userEventsPublisher.publishUserCreated(response);
+    return response;
   }
 }

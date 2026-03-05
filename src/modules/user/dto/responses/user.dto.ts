@@ -42,7 +42,7 @@ export class UserDTO implements BaseDTO<UserDTO> {
     return Object.assign(new UserDTO(), parsedJson);
   }
 
-  public apply(entitie: UserEntitie): UserDTO {
+  static apply(entitie: UserEntitie): UserDTO {
     return Object.assign(new UserDTO(), {
       id: entitie.id,
       username: entitie.username,
@@ -51,11 +51,11 @@ export class UserDTO implements BaseDTO<UserDTO> {
     });
   }
 
-  public entitieMapper(entitie: UserEntitie): UserDTO {
+  static entitieMapper(entitie: UserEntitie): UserDTO {
     return this.apply(entitie);
   }
 
-  public listMapper(entities: UserEntitie[]): UserDTO[] {
+  static listMapper(entities: UserEntitie[]): UserDTO[] {
     return entities.map((entitie) => this.apply(entitie));
   }
 }

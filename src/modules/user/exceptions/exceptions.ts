@@ -18,3 +18,7 @@ export const InValidDataException = (): never => {
     HttpStatus.BAD_REQUEST,
   );
 };
+
+export const UsersNotFoundException = (): never => {
+  throw new HttpException('Users not found', HttpStatus.NOT_FOUND);
+};

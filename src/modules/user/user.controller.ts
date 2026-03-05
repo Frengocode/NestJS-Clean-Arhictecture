@@ -5,6 +5,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Put,
   Query,
   Req,
 } from '@nestjs/common';
@@ -31,10 +32,22 @@ import {
 } from './interfaces/use-cases/iget.auth.user.use-case';
 import { AuthUserRequestDTO } from './dto/request/auth-user';
 import { AuthUserDTO } from './dto/responses/auth-user';
-import { CurrentUserGuard, type AuthenticatedRequest } from './guards/current-user-id.guard';
+import {
+  CurrentUserGuard,
+  type AuthenticatedRequest,
+} from './guards/current-user-id.guard';
 import { UseGuards } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
-
+import {
+  type IGetUsersUseCase,
+  GET_USERS_USE_CASE,
+} from './interfaces/use-cases/iget.users.use-case';
+import { PaginationDTO } from 'src/common/pagination/pagination.dto';
+import { UpdateUserDTO } from './dto/request/update-user';
+import {
+  UPDATE_USER_USE_CASE,
+  type IUpdateUserUseCase,
+} from './interfaces/use-cases/iupdate.user.use-case';
 
 @Controller('users/api/v1')
 export class UserController {
@@ -50,6 +63,12 @@ export class UserController {
 
     @Inject(GET_AUTH_USER_USE_CASE)
     public getAuthUserUseCase: IGetAuthUserUseCase,
+
+    @Inject(GET_USERS_USE_CASE)
+    public getUsersUseCase: IGetUsersUseCase,
+
+    @Inject(UPDATE_USER_USE_CASE)
+    public updateUserUseCase: IUpdateUserUseCase,
   ) {}
 
   @Post('/create/user')
@@ -86,15 +105,32 @@ export class UserController {
     return this.getAuthUserUseCase.execute(request);
   }
 
-
-  @Get("/get/me")
-  @ApiResponse({type: UserDTO})
-  @ApiBearerAuth("bearer")
+  @Get('/get/me')
+  @ApiResponse({ type: UserDTO })
+  @ApiBearerAuth('bearer')
   @UseGuards(CurrentUserGuard)
-  async getUserMe(@Req() req: AuthenticatedRequest): Promise<UserDTO | never>{
-    return await this.getUserUseCase.execute(req.currentUser.id)
+  async getUserMe(@Req() req: AuthenticatedRequest): Promise<UserDTO | never> {
+    return await this.getUserUseCase.execute(req.currentUser.id);
+  }
+
+  @Get('/get/users')
+  @ApiResponse({ type: UserDTO })
+  async getUsers(
+    @Query() pagination: PaginationDTO,
+  ): Promise<UserDTO[] | unknown | never> {
+    return await this.getUsersUseCase.execute(pagination);
+  }
+
+  @Put('/update/user')
+  @ApiResponse({ type: UserDTO })
+  @ApiBearerAuth('bearer')
+  @UseGuards(CurrentUserGuard)
+  async updateUser(
+    @Body() dto: UpdateUserDTO,
+    @Req() req: AuthenticatedRequest,
+  ): Promise<UserDTO | never> {
+    return await this.updateUserUseCase.execute(dto, req.currentUser.id);
   }
 }
-
 
 // TODO FOR TOMOROW: GetCurrentUser, AuthService, UpdateUser, PostService WITH DDD

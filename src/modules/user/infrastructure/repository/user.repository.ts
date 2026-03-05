@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 import { IUserRepository } from '../../interfaces/repository/iuser.repository';
 import { UpdateUserDTO } from '../../dto/request/update-user';
+import { PaginationDTO } from 'src/common/pagination/pagination.dto';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
@@ -38,11 +39,22 @@ export class UserRepository implements IUserRepository {
     return await this._get_by_column('username', username);
   }
 
+  async getUsers(pagination: PaginationDTO): Promise<UserEntitie[]> {
+    const users: UserEntitie[] = await this.repo.find({
+      take: pagination.take,
+      skip: pagination.page * pagination.take,
+      order: {
+        createdAt: "desc",
+      },
+    });
+    return users;
+  }
+
   async updateUser(
     instance: UserEntitie,
     dto: UpdateUserDTO,
-  ): Promise<UserEntitie | null> {
-    await this.repo.update(instance, dto);
-    return this.repo.merge(instance);
+  ): Promise<UserEntitie> {
+    const updatedUser: UserEntitie = this.repo.merge(instance, dto);
+    return await this.repo.save(updatedUser);
   }
 }

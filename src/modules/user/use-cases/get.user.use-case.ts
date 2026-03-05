@@ -23,13 +23,13 @@ export class GetUserUseCase implements IGetUserUseCase {
     const mapper: UserDTO = new UserDTO();
     const cachedData: UserDTO | null = await this.cache.get(key, mapper);
     if (cachedData) {
-      console.log("Get user", cachedData);
+      console.log('Get user', cachedData);
       return cachedData;
     }
     const user: UserEntitie | never =
       await this.getUserVerifier.getOr404(userID);
 
-    const response: UserDTO = mapper.entitieMapper(user);
+    const response: UserDTO = UserDTO.entitieMapper(user);
     await this.cache.set(key, defaultCacheTTL, response);
     return response;
   }

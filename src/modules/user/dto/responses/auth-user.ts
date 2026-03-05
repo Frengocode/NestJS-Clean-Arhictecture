@@ -31,7 +31,7 @@ export class AuthUserDTO implements BaseDTO<AuthUserDTO> {
   @IsString()
   public password: string;
 
-  public entitieMapper(entitite: UserEntitie): AuthUserDTO {
+  static entitieMapper(entitite: UserEntitie): AuthUserDTO {
     return Object.assign(new AuthUserDTO(), {
       id: entitite.id,
       username: entitite.username,

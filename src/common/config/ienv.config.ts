@@ -1,7 +1,8 @@
 export interface IEnvConfig {
   postgresql: IPostgresSQLConfig;
   redis: IRedisConfig;
-  auth: IAuthConfig
+  auth: IAuthConfig;
+  rabbitMQ: IRabbitMQConfig;
 }
 
 export interface HostPort {
@@ -15,10 +16,17 @@ export interface IPostgresSQLConfig extends HostPort {
   dbname: string;
 }
 
-export interface IRedisConfig extends HostPort {}
+export interface IRedisConfig extends HostPort {
+  defaultCacheTTL: number;
+}
 
+export interface IAuthConfig {
+  jwtSecret: string;
+  expiresAt: string;
+}
 
-export interface IAuthConfig{
-  jwtSecret: string,
-  expiresAt: string
+export interface IRabbitMQConfig {
+  url: string;
+  queue: string;
+  exchange: string;
 }

@@ -4,7 +4,6 @@ import { PrimaryGeneratedColumn } from 'typeorm';
 
 export abstract class BaseMixin {
   @PrimaryGeneratedColumn()
-  @Index()
   public id: number;
 
   @UpdateDateColumn({ type: 'date' })

@@ -4,11 +4,19 @@ import { AppService } from './app.service';
 import { UserModule } from './modules/user/user.module';
 import { DatabaseModule } from './common/database/database.module';
 import { GlobalConfigModule } from './common/config/config.module';
-import { RedisCacheModule } from './common/cache/redis/redis.cache.module';
+import { CacheGlobalModule } from './common/cache/cache.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { UserHandlerModule } from './modules/user/events/handlers/user.handler.module';
 
 @Module({
-  imports: [GlobalConfigModule, UserModule, RedisCacheModule, DatabaseModule, AuthModule],
+  imports: [
+    UserHandlerModule,
+    GlobalConfigModule,
+    UserModule,
+    CacheGlobalModule,
+    DatabaseModule,
+    AuthModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
